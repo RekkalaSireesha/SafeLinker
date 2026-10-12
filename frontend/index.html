@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeLinker | Cyber Safety</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#">🔗 SafeLinker</a>
+    <div id="userActions" class="hidden">
+      <span id="welcomeUser"></span>
+      <button id="logoutBtn" class="outline">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="authSection" class="card auth">
+      <p class="eyebrow">YOUR ONLINE SAFETY COMPANION</p>
+      <h1>Think before you click.</h1>
+      <p>Check suspicious links and learn how to protect yourself.</p>
+      <label for="username">Username</label>
+      <input id="username" autocomplete="username" placeholder="Username">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password"
+             placeholder="At least 8 characters">
+      <div class="actions">
+        <button id="loginBtn">Login</button>
+        <button id="signupBtn" class="outline">Create account</button>
+      </div>
+      <p id="authMessage" class="message" role="status"></p>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <nav class="nav">
+        <button data-view="dashboard" class="nav-btn active">Dashboard</button>
+        <button data-view="scanner" class="nav-btn">URL Scanner</button>
+        <button data-view="history" class="nav-btn">My History</button>
+        <button data-view="quiz" class="nav-btn">Awareness Quiz</button>
+        <button data-view="admin" id="adminNav" class="nav-btn hidden">Admin</button>
+      </nav>
+
+      <p id="appMessage" class="message" role="status"></p>
+
+      <section id="dashboardView" class="view">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">PERSONAL SECURITY CENTER</p>
+            <h1>Welcome, <span id="dashboardName"></span></h1>
+            <p>Understand your scan activity and stay alert online.</p>
+          </div>
+          <div class="hero-icon">🛡️</div>
+        </div>
+
+        <div class="stats">
+          <article class="stat"><span>Total scans</span><strong id="totalScans">0</strong></article>
+          <article class="stat red"><span>High risk</span><strong id="highRisk">0</strong></article>
+          <article class="stat orange"><span>Medium risk</span><strong id="mediumRisk">0</strong></article>
+          <article class="stat green"><span>Low risk</span><strong id="lowRisk">0</strong></article>
+        </div>
+
+        <div class="columns">
+          <article class="card">
+            <h2>Risk distribution</h2>
+            <div class="chart-box"><canvas id="riskChart"></canvas></div>
+          </article>
+          <article class="card">
+            <h2>Last 7 days</h2>
+            <div class="chart-box"><canvas id="dailyChart"></canvas></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="heading-row">
+            <h2>Recent scans</h2>
+            <button data-go="history" class="outline">View all</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>URL</th><th>Score</th><th>Risk</th><th>Date</th></tr></thead>
+              <tbody id="recentBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Quiz progress</h2>
+          <p>Attempts: <strong id="quizAttempts">0</strong></p>
+          <p>Best score: <strong id="quizBest">0 / 5</strong></p>
+          <button data-go="quiz">Take awareness quiz</button>
+        </article>
+      </section>
+
+      <section id="scannerView" class="view hidden">
+        <article class="card">
+          <p class="eyebrow">LINK PROTECTION</p>
+          <h1>URL Scanner</h1>
+          <p>Analyze a link before deciding whether to trust it.</p>
+          <form id="scanForm">
+            <label for="urlInput">Website URL</label>
+            <input id="urlInput" type="text" maxlength="2083"
+                   placeholder="https://example.com" required>
+            <button id="scanBtn">Analyze URL</button>
+          </form>
+          <p class="notice">A low score does not guarantee safety. Do not open suspicious links to test them.</p>
+          <div id="scanResult" class="result hidden">
+            <h2 id="scanRisk"></h2>
+            <p>Score: <strong id="scanScore"></strong>/100</p>
+            <p id="intelStatus"></p>
+            <ul id="scanReasons"></ul>
+          </div>
+        </article>
+      </section>
+
+      <section id="historyView" class="view hidden">
+        <article class="card">
+          <h1>My Scan History</h1>
+          <p>Search and filter your previous scans.</p>
+          <form id="historyForm" class="filters">
+            <input id="historySearch" placeholder="Search URL">
+            <select id="historyRisk">
+              <option value="">All risk levels</option>
+              <option>Low Risk</option>
+              <option>Medium Risk</option>
+              <option>High Risk</option>
+            </select>
+            <button>Apply filters</button>
+            <button type="button" id="exportBtn" class="outline">Export CSV</button>
+          </form>
+          <p id="historyCount"></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>URL</th><th>Score</th><th>Risk</th><th>Reasons</th><th>Date</th><th>Action</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+          <div class="actions">
+            <button id="prevPage" class="outline">Previous</button>
+            <span id="pageInfo">Page 1</span>
+            <button id="nextPage" class="outline">Next</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="quizView" class="view hidden">
+        <article class="card">
+          <p class="eyebrow">LEARN TO RECOGNIZE SCAMS</p>
+          <h1>Phishing Awareness Quiz</h1>
+          <form id="quizForm">
+            <div id="quizQuestions">Loading questions...</div>
+            <button id="submitQuiz" type="submit">Submit answers</button>
+          </form>
+          <div id="quizResult" class="result hidden" role="status"></div>
+        </article>
+      </section>
+
+      <section id="adminView" class="view hidden">
+        <article class="card">
+          <h1>Administrator Dashboard</h1>
+          <p>Platform-wide statistics and user management overview.</p>
+          <div class="stats">
+            <article class="stat"><span>Total users</span><strong id="adminUsers">0</strong></article>
+            <article class="stat"><span>Total scans</span><strong id="adminScans">0</strong></article>
+            <article class="stat red"><span>High risk</span><strong id="adminHigh">0</strong></article>
+          </div>
+          <button id="loadUsersBtn">Load users</button>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Username</th><th>Role</th><th>Total scans</th><th>Joined</th></tr></thead>
+              <tbody id="adminUsersBody"></tbody>
+            </table>
+          </div>
+          <h2>Recent platform scans</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>URL</th><th>Risk</th><th>Score</th></tr></thead>
+              <tbody id="adminScansBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <footer>SafeLinker · Think before you click.</footer>
+  <script src="script.js"></script>
+</body>
+</html>
